@@ -3,6 +3,7 @@ package com.springboot.springbootapp.controller;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.springboot.springbootapp.exception.ProductNotFoundException;
 import com.springboot.springbootapp.model.Product;
 
 import org.slf4j.Logger;
@@ -19,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-public class ProductController {
+public class ProductServiceController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductController.class); 
+    private static final Logger logger = LoggerFactory.getLogger(ProductServiceController.class); 
 
     private static Map<String, Product> productRepo = new HashMap<>();
 
@@ -54,6 +55,8 @@ public class ProductController {
     @RequestMapping(value="/products/{id}", method=RequestMethod.PUT)
     public ResponseEntity<Object> updateProduct(@PathVariable("id") String id, @RequestBody Product product) {
         logger.info("Updating a product.");
+        if(!productRepo.containsKey(id))
+            throw new ProductNotFoundException();
         productRepo.remove(id);
         product.setId(id);
         productRepo.put(id, product);
@@ -63,6 +66,8 @@ public class ProductController {
     @RequestMapping(value="/products/{id}", method=RequestMethod.DELETE)
     public ResponseEntity<Object> deleteProduct(@PathVariable("id") String id) {
         logger.info("Deleting a product.");
+        if(!productRepo.containsKey(id))
+            throw new ProductNotFoundException();
         productRepo.remove(id);
         return new ResponseEntity<>("Product is deleted successfully.", HttpStatus.OK);
     }
