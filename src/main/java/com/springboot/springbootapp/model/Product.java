@@ -1,7 +1,14 @@
 package com.springboot.springbootapp.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+
+@Entity
+@Table(name = "PRODUCT")
 public class Product {
 
+    @Id
     private String id;
     private String name;
 
@@ -17,6 +24,15 @@ public class Product {
     }
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder()
+        .append("Product [")
+        .append("id="+id)
+        .append(", name="+name)
+        .append("]").toString();
     }
 
 }

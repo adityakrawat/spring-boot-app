@@ -1,63 +1,57 @@
 package com.springboot.springbootapp.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
+import com.springboot.springbootapp.dao.ProductRepository;
 import com.springboot.springbootapp.exception.ProductNotFoundException;
 import com.springboot.springbootapp.model.Product;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
-  
-    private static Map<String, Product> productRepo = new HashMap<>();
 
-    static {
-        Product honey = new Product(); 
-        honey.setId("1"); 
-        honey.setName("Honey");
-        productRepo.put(honey.getId(), honey);
-
-        Product almond = new Product();
-        almond.setId("2");
-        almond.setName("Almond");
-        productRepo.put(almond.getId(), almond);
-    }
+    @Autowired
+    ProductRepository productRepo;
 
     @Override
     public Collection<Product> getProducts() {
         logger.info("Returning all products.");
-        return productRepo.values();
+        Collection<Product> productLs = new ArrayList<>();
+        productRepo.findAll().forEach(e -> productLs.add(e));
+        return productLs;
     }
 
     @Override
     public void createProduct(Product product) {
         logger.info("Adding a product.");
-        productRepo.put(product.getId(), product);
+        productRepo.save(product);
     }
 
     @Override
     public void updateProduct(String id, Product product) {
         logger.info("Updating a product.");
-        if(!productRepo.containsKey(id))
+        Optional<Product> productOpt = productRepo.findById(id);
+        if(!productOpt.isPresent())
             throw new ProductNotFoundException();
-        productRepo.remove(id);
-        product.setId(id);
-        productRepo.put(id, product);    
+        productRepo.deleteById(id);
+        productRepo.save(product);    
     }
 
     @Override
     public void deleteProduct(String id) {
         logger.info("Deleting a product.");
-        if(!productRepo.containsKey(id))
+        Optional<Product> productOpt = productRepo.findById(id);
+        if(!productOpt.isPresent())
             throw new ProductNotFoundException();
-        productRepo.remove(id);
+        productRepo.deleteById(id);
     }
     
 }
