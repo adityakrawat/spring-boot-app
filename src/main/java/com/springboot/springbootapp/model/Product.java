@@ -1,5 +1,6 @@
 package com.springboot.springbootapp.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Id;
@@ -9,7 +10,10 @@ import javax.persistence.Id;
 public class Product {
 
     @Id
+    @Column
     private String id;
+
+    @Column(name = "PRODUCT_NAME")
     private String name;
 
     public String getId() {

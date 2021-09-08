@@ -20,7 +20,7 @@ public class SpringBootAppApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		System.out.println("Default message for Application Runner");
+		logger.info("Default message for Application Runner");
 	}
 
 	@Bean
